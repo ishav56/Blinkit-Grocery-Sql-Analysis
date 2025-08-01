@@ -1,0 +1,42 @@
+
+Retrieve all distinct outlet types from the dataset.
+
+Count the number of items for each item type.
+
+Calculate the average item weight grouped by fat content.
+
+Find the maximum sales value for each item type.
+
+Show the number of outlets in each outlet size category.
+
+
+Identify the outlet that has generated the highest total sales.
+
+Display the average total sales per outlet location type.
+
+Show the item type with the highest average item visibility.
+
+For each outlet size, calculate the average item weight.
+
+List all items with total sales greater than the average sales.
+
+
+Rank each outlet by total sales in descending order using a window function.
+
+Use dense ranking to sort item types by average total sales.
+
+Assign row numbers to items grouped by item type based on total sales.
+
+Divide the dataset into 4 equal parts based on item weight using NTILE().
+
+For each item type, show total sales and the previous item’s total sales using LAG().
+
+For each outlet, show the current item sales and the next item’s sales using LEAD().
+
+For every outlet type, return the first item by highest total sales using FIRST_VALUE().
+
+For every outlet type, return the last item by lowest item visibility using LAST_VALUE().
+
+Calculate the difference in total sales between the current and previous row using LAG().
+
+For each item type, calculate the cumulative total sales using SUM() as a window function.
