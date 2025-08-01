@@ -1,0 +1,99 @@
+
+select * from blinkit_data;
+
+
+SELECT SUM(total_sales) as total_sales from blinkit_data;
+
+select round(avg(total_sales),0) as total_avg from blinkit_data;
+
+select  count(*),item_fat_content from blinkit_data group by Item_Fat_Content;
+
+select  sum(total_sales),item_fat_content from blinkit_data group by Item_Fat_Content;
+
+
+
+select * from blinkit	_data;
+
+-- Q-1 Retrieve all distinct outlet types from the dataset.
+select distinct outlet_type from blinkit_data;
+
+-- Q-2 Count the number of items for each item type.
+select count(*),item_type from blinkit_data group by item_type;
+
+-- Q-3 Calculate the average item weight grouped by fat content.
+select avg(item_weight) as avg_weight ,item_fat_content from blinkit_data where item_fat_content="Low fat" group by item_fat_content;
+
+-- Q-4 Find the maximum sales value for each item type.
+select max(total_sales) as maximum_sales,item_type from blinkit_data group by Item_Type;
+
+-- Q-5 Show the number of outlets in each outlet size category.
+select count(Outlet_identifier),outlet_size from blinkit_data group by outlet_size;
+
+--  Q-6 Identify the outlet that has generated the highest total sales.
+select sum(total_sales) as higest_sales,Outlet_identifier from  blinkit_data group by Outlet_identifier
+order by higest_sales desc limit 1;
+
+-- Q-7 Display the average total sales per outlet location type.
+select avg(total_sales) as total_avg,outlet_identifier,Outlet_location_type from blinkit_data 
+group by outlet_identifier,Outlet_location_type;
+
+--  Q-8 Show the item type with the highest average item visibility.
+select avg(item_visibility) as higest_avg_visibility,item_type from blinkit_data group by
+item_type order by higest_avg_visibility desc limit 1;
+
+-- Q-9 For each outlet size, calculate the average item weight.
+select avg(item_weight) as avg_item_weight,outlet_size from blinkit_data 
+group by outlet_size;
+
+-- Q-10 List all items with total sales greater than the average sales.
+select item_type,Total_Sales from blinkit_data where Total_Sales>(SELECT avg(total_sales) as avg_sales FROM blinkit_data  ) ;
+
+-- Q-11 Rank each outlet by total sales in descending order using a window function.
+select *,rank() over(partition by Outlet_identifier order by total_sales desc) from blinkit_data;
+
+-- Q-12 Use dense ranking to sort item types by average total sales.
+select item_type,avg(total_sales) as avg_sales,dense_rank() over(order by avg(total_sales) asc  ) from blinkit_data
+group by item_type;
+
+-- Q-13 Assign row numbers to items grouped by item type based on total sales.
+select *,row_number() over(partition by item_type order by total_sales ) from blinkit_data;
+
+-- Q-14 Divide the dataset into 4 equal parts based on item weight.
+select item_weight,ntile(4) over(partition by item_weight) as divide__equal_values from blinkit_data;
+
+-- Q-15 For each item type, show total sales and the previous item’s total sales 
+select item_type,total_sales,lag(total_sales) over(partition by item_type order by total_sales)
+as previous_sales from blinkit_data;
+
+-- Q-16 For each outlet, show the current item sales and the next item’s sales 
+select Outlet_identifier,lead(total_sales) over (partition by Outlet_identifier order by total_sales  desc) as next_salary 
+from blinkit_data;
+
+-- Q-17 For every outlet type, return the first item by highest total sales Top 2 in Every outlet type
+select * from 
+(select *,row_number() over (partition by outlet_type order by total_sales desc) as arrange_higest_salary from 
+(select Outlet_type,item_type,total_sales,first_value(item_type) over(partition by Outlet_type order by total_sales desc) as First_values_by_higest_salary
+from blinkit_data) as e ) as w where w.arrange_higest_salary<3 ;
+
+-- Q-18 For every outlet type, return the last item by lowest item visibility  Top 2 in Every Outlet type
+select * from 
+(select *,row_number() over (partition by Outlet_type order by Item_Visibility asc) as last_sales_rank from 
+(select Outlet_type,Item_Type,Item_Visibility,last_value(item_type)
+over(partition by  Outlet_type order by Item_Visibility asc ) as last_values  from blinkit_data) as e ) as w  where
+w.last_sales_rank<3;
+
+
+-- Q-19Calculate the difference in total sales between the current and previous row using LAG().
+select *,lag(total_sales) over (order by total_sales) as previous_total_sales from 
+(select total_sales,item_type,round( total_sales-lag(total_sales) over (order by total_sales),4) as diffrence_between_current_previous_sales
+from blinkit_data) as e;
+
+
+-- Q-20 For each item type, calculate the cumulative total sales using SUM() as a window function;
+
+select *,sum(total_sales) over(partition by item_type order by total_sales) as cumulative_total_sales
+from blinkit_data ;
+
+
+
+
